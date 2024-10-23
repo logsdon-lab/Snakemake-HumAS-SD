@@ -1,0 +1,5 @@
+cens
+results/
+logs/
+benchmarks/
+.snakemake/

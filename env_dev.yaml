@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - stringdecomposer
+  - python==3.12
+  - pip
+  - pip:
+    - polars
+    - intervaltree
+    - snakemake==8.18.2

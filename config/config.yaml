@@ -1,0 +1,6 @@
+input_dir: "cens"
+output_dir: "results"
+benchmarks_dir: "benchmarks"
+logs_dir: "logs"
+hmm_profile: "data/AS-HORs-hmmer.hmm"
+threads: 4
