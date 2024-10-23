@@ -35,9 +35,8 @@ Two centromere HOR annotation bed files.
     * See also https://github.com/logsdon-lab/Snakemake-HumAS-HMMER
 2. Output from stringdecomposer.
 
->![NOTE]
-> From HGSVC3 sample (`HG01596_chr3_haplotype1-0000018:7760823-18212765`)
-> Extracted via CenMAP v0.1.5
+> [!NOTE]
+> From HGSVC3 sample , `HG01596_chr3_haplotype1-0000018:7760823-18212765`, which was extracted via CenMAP v0.1.5.
 
 ```bash
 python test/scripts/compare.py
