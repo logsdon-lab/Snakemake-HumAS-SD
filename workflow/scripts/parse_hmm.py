@@ -1,7 +1,7 @@
 import re
 import os
 import argparse
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import TextIO
 
 RGX_NAME = re.compile(r"NAME\s\s(.*?)\n")
@@ -22,7 +22,8 @@ os.makedirs(outdir, exist_ok=True)
 hmm = fh.read().split("//")
 
 hors_done = Counter()
-chr_fhs = {}
+all_chrom_fhs = {}
+all_anc_mons = defaultdict(list)
 for hmm_rec in hmm:
     hor_name = re.search(RGX_NAME, hmm_rec)
     if not hor_name:
@@ -41,19 +42,32 @@ for hmm_rec in hmm:
     fa_fname_prefix = "chr" if mtch_chr_name else ""
     # Add multiple (ex. 1/15/19) to each chr file.
     for chr_name in chr_names:
-        if not chr_fhs.get(chr_name):
-            chr_fhs[chr_name] = open(
+        chrom_fh = all_chrom_fhs.get(chr_name)
+        is_not_anc_mon = hor_name.startswith("S")
+        hor_nts = ''.join(nt for _, nt in re.findall(RGX_NT, hmm_rec)).upper()
+
+        if not chrom_fh and is_not_anc_mon:
+            all_chrom_fhs[chr_name] = open(
                 os.path.join(outdir, f"{fa_fname_prefix}{chr_name}.fa"), "wt"
             )
+            chrom_fh = all_chrom_fhs[chr_name]
+            
+        elif not is_not_anc_mon:
+            all_anc_mons[chr_name].append(hor_nts)
 
-        chr_fh = chr_fhs[chr_name]
-
-        # TODO: Just take the first one.
-        chr_fh.write(f">{new_hor_name}\n")
-        hor_nts = ''.join(nt for _, nt in re.findall(RGX_NT, hmm_rec)).upper()
-        chr_fh.write(f"{hor_nts}\n")
+        if is_not_anc_mon:
+            chrom_fh.write(f">{new_hor_name}\n")
+            chrom_fh.write(f"{hor_nts}\n")
 
     hors_done[hor_name] += 1
 
-for fh in chr_fhs.values():
+# Get ancestral monomers
+for chr_name, chr_fh in all_chrom_fhs.items():
+    # Write all ancestral monomers to all chr_fhs.
+    for anc_mon_name, anc_mons in all_anc_mons.items():
+        for anc_mon in anc_mons:
+            chr_fh.write(f">{anc_mon_name}\n")
+            chr_fh.write(f"{anc_mon}\n")
+
+for chr_name, fh in all_chrom_fhs.items():
     fh.close()
