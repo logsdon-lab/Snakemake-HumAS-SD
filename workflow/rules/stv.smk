@@ -7,7 +7,7 @@ rule generate_stv:
     output:
         stv_row_bed=join(OUTPUT_DIR, "{fname}", "stv_row.bed"),
     conda:
-        "../envs/stv.yaml"
+        "../envs/env.yaml"
     benchmark:
         join(BMK_DIR, "generate_stv_{fname}.txt")
     log:

@@ -12,7 +12,7 @@ checkpoint generate_monomers:
     log:
         join(LOG_DIR, "generate_monomers.log"),
     conda:
-        "../envs/stringdecomposer.yaml"
+        "../envs/env.yaml"
     shell:
         """
         python {input.script} -i {input.hmm} -o {output} 2> {log}
@@ -42,7 +42,7 @@ rule run_stringdecomposer:
         join(LOG_DIR, "run_stringdecomposer_{fname}.log"),
     threads: config["threads"]
     conda:
-        "../envs/stringdecomposer.yaml"
+        "../envs/env.yaml"
     shell:
         """
         stringdecomposer -t {threads} {input.seq} {input.monomers} -o {params.output_dir} &> {log}
@@ -59,7 +59,7 @@ rule convert_to_bed9:
     params:
         thr=70.0,
     conda:
-        "../envs/stringdecomposer.yaml"
+        "../envs/env.yaml"
     shell:
         """
         awk -v OFS="\\t" -v QT="'" '{{
