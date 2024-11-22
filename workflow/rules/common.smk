@@ -1,3 +1,8 @@
+import re
+import sys
+from os.path import join, dirname
+
+
 def extract_fa_fnames_and_chr(
     input_dir: str, *, filter_chr: str | None = None
 ) -> tuple[list[str], list[str]]:

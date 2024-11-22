@@ -5,7 +5,7 @@ HMM profile:
 * https://github.com/fedorrik/HumAS-HMMER_for_AnVIL/blob/main/AS-HORs-hmmer3.4-071024.hmm
 
 Based on annotations from:
-* Uralsky, L. I., Shepelev, V. A., Alexandrov, A. A., Yurov, Y. B., Rogaev, E. I., & Alexandrov, I. A. (2019). Classification and monomer-by-monomer annotation dataset of suprachromosomal family 1 alpha satellite higher-order repeats in hg38 human genome assembly. Data in brief, 24, 103708. https://doi.org/10.1016/j.dib.2019.103708
+* Shepelev VA, Uralsky LI, Alexandrov AA, Yurov YB, Rogaev EI, Alexandrov IA. Annotation of suprachromosomal families reveals uncommon types of alpha satellite organization in pericentromeric regions of hg38 human genome assembly. Genom Data. 2015;5:139-146. doi:10.1016/j.gdata.2015.05.035
 
 ### Usage
 ```bash
@@ -13,6 +13,11 @@ conda env create -f env.yaml --name humas_sd
 conda activate humas_sd
 snakemake -np --sdm conda --configfile config/config.yaml -c 1
 ```
+
+### Input
+Expects `.fa` files in `input_dir` with `chr?` in name.
+* ex. `chr3.fa`, `HG0002_ch3_new.fa`, or `HG00171_chr3.fa`
+
 
 ### Config
 ```yaml
