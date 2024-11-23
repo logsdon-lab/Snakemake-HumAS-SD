@@ -9,7 +9,8 @@ RGX_NAME = re.compile(r"NAME\s\s(.*?)\n")
 RGX_NT = re.compile(r"(\d)\s([atgc])")
 RGX_CHRS = re.compile(r"C([\d\/XYM]+)H")
 CHRS = [f"{i}" for i in itertools.chain(range(1, 23), ("X", "Y", "M"))]
-ACRO_CHRS = {"13", "14", "15", "21", "22"}
+# https://www.nature.com/articles/s41586-023-05976-y
+ACRO_LD_CHRS = {"13", "14", "21", "22"}
 
 ap = argparse.ArgumentParser(description="Convert HMM model to fasta.")
 ap.add_argument("-i", "--input_hmm", help="Input HMM model file.", required=True, type=argparse.FileType("r"))
@@ -52,9 +53,9 @@ for hmm_rec in hmm:
     # Add multiple (ex. 1/15/19) to each chr file.
     for chr_name in chr_names:
         all_chrom_mons[chr_name].add((new_hor_name, hor_seq))
-        # Add all acro mons to each other.
-        if chr_name in ACRO_CHRS:
-            for other_acro_chr in ACRO_CHRS.difference(set([chr_name])):
+        # Add all acro mons with low LD in PHR regions that can recombine with one another.
+        if chr_name in ACRO_LD_CHRS:
+            for other_acro_chr in ACRO_LD_CHRS.difference(set([chr_name])):
                 all_chrom_mons[other_acro_chr].add((new_hor_name, hor_seq))
 
     hors_done[hor_name] += 1
