@@ -2,7 +2,7 @@
 
 checkpoint generate_monomers:
     input:
-        script="workflow/scripts/parse_hmm.py",
+        script=workflow.source_path("../scripts/parse_hmm.py"),
         # TODO: Replace with fasta dir?
         hmm=HMM_PROFILE,
     output:

@@ -2,7 +2,7 @@
 
 rule generate_stv:
     input:
-        script="workflow/scripts/stv_multiarray.py",
+        script=workflow.source_path("../scripts/stv_multiarray.py"),
         hor_bed=join(OUTPUT_DIR, "{fname}", "final_decomposition.bed"),
     output:
         stv_row_bed=join(OUTPUT_DIR, "{fname}", "stv_row.bed"),
