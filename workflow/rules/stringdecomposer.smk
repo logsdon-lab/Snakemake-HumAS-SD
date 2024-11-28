@@ -57,7 +57,7 @@ rule convert_to_bed9:
     log:
         join(LOG_DIR, "finalize_output_{fname}.log"),
     params:
-        thr=70.0,
+        thr=IDENT_THR,
     conda:
         "../envs/env.yaml"
     shell:
