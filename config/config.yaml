@@ -4,4 +4,5 @@ benchmarks_dir: "benchmarks"
 logs_dir: "logs"
 hmm_profile: "data/AS-HORs-hmmer.hmm"
 threads: 24
+mem: 8GB
 identity_thr: 95.0

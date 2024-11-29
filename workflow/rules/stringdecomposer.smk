@@ -34,6 +34,8 @@ rule run_stringdecomposer:
         raw=join(OUTPUT_DIR, "{fname}", "final_decomposition_raw.tsv"),
         final=join(OUTPUT_DIR, "{fname}", "final_decomposition.tsv"),
         log=join(OUTPUT_DIR, "{fname}", "stringdecomposer.log"),
+    resources:
+        mem=config.get("mem", "8GB"),
     params:
         output_dir=lambda wc, output: dirname(str(output.alt)),
     benchmark:
