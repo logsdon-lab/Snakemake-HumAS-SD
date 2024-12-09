@@ -5,7 +5,7 @@ import argparse
 import sys
 
 
-RGX_CHR = re.compile(r"(chr[0-9XY]+)")
+RGX_CHRS = re.compile(r"C([\d\/XYM]+)H")
 
 
 def stv_namer(live_stv_name, mons_numbers, strand):
@@ -120,37 +120,41 @@ def main():
     with open(input_bed_path) as bed:
         for line in bed:
             if line[:5] != "track":  # skip header
-                monomer_name = line.split("\t")[3]
-                contig_name = line.split("\t")[0]
-                try:
-                    chr_name = RGX_CHR.search(line.split("\t")[0]).group()
-                except AttributeError:
-                    chr_name = None
+                name, st, end, monomer_name, ident, ort, st_2, end_2, rgb = line.split(
+                    "\t"
+                )
+                chroms = set(
+                    chrom
+                    for chrom_str in RGX_CHRS.findall(monomer_name)
+                    for chrom in chrom_str.split("/")
+                )
 
-                if "chr1" == chr_name or "chr19" == contig_name:
-                    if "S1C1/5/19H1L.6/4" in line:
-                        line = line.replace("S1C1/5/19H1L.6/4", "S1C1/5/19H1L.6")
+                if "1" in chroms or "19" in chroms or "5" in chroms:
+                    if "S1C1/5/19H1L.6/4" == monomer_name:
+                        monomer_name = "S1C1/5/19H1L.6"
 
-                elif "chr5" == chr_name:
-                    if "S1C1/5/19H1L.2/6" in line:
-                        line = line.replace("S1C1/5/19H1L.2/6", "S1C1/5/19H1L.6")
+                    if "S1C1/5/19H1L.2/6" == monomer_name:
+                        monomer_name = "S1C1/5/19H1L.6"
 
-                elif "chr8" == chr_name:
-                    if "S2C8H1L.6/7s" in line:
-                        line = line.replace("S2C8H1L.6/7s", "S2C8H1L.6/7")
+                elif "8" in chroms:
+                    if "S2C8H1L.6/7s" == monomer_name:
+                        monomer_name = "S2C8H1L.6/7"
 
-                elif "chr13" == chr_name:
-                    if "S2C13/21H1-B.10" in line:
-                        line = line.replace("S2C13/21H1-B.10", "S2C13/21H1L.10")
+                elif "13" in chroms or "21" in chroms:
+                    if "S2C13/21H1-B.10" == monomer_name:
+                        monomer_name = "S2C13/21H1L.10"
 
-                elif "chr18" == chr_name:
-                    if "S2C18H2-E.x/2" in line:
-                        line = line.replace("S2C18H2-E.x/2", "S2C18H2-E.2")
-                    if "S2C18H2-E.2/x" in line:
-                        line = line.replace("S2C18H2-E.2/x", "S2C18H2-E.2")
+                elif "18" in chroms:
+                    if (
+                        "S2C18H2-E.x/2" == monomer_name
+                        or "S2C18H2-E.2/x" == monomer_name
+                    ):
+                        monomer_name = "S2C18H2-E.2"
 
                 if monomer_name.startswith("S"):
-                    input_bed.append(line.split())
+                    input_bed.append(
+                        [name, st, end, monomer_name, ident, ort, st_2, end_2, rgb]
+                    )
 
     # list of contigs
     contigs = []

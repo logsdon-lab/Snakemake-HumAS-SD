@@ -2,3 +2,5 @@ test/data/HG01596_chr3_haplotype1-0000018:7760823-18212765_humas_hmmer.bed filte
 test/data/HG01596_chr3_haplotype1-0000018:7760823-18212765_stringdecomposer.bed filter=lfs diff=lfs merge=lfs -text
 test/data/HG01596_chr3_haplotype1-0000018:7760823-18212765.fa filter=lfs diff=lfs merge=lfs -text
 test/data/HG01596_chr3_haplotype1-0000018:7760823-18212765.fa.fai filter=lfs diff=lfs merge=lfs -text
+test/data/stv_multiarray/expected.bed filter=lfs diff=lfs merge=lfs -text
+test/data/stv_multiarray/input.bed filter=lfs diff=lfs merge=lfs -text

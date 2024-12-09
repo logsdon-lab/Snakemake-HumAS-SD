@@ -4,3 +4,4 @@ logs/
 benchmarks/
 .snakemake/
 New_Stv/
+__pycache__
