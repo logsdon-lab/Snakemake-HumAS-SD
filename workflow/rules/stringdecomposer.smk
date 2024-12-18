@@ -58,8 +58,6 @@ rule convert_to_bed9:
         join(OUTPUT_DIR, "{fname}", "final_decomposition.bed"),
     log:
         join(LOG_DIR, "finalize_output_{fname}.log"),
-    params:
-        thr=IDENT_THR,
     conda:
         "../envs/env.yaml"
     shell:
@@ -69,7 +67,7 @@ rule convert_to_bed9:
             # Remove HOR enumerator and single quote.
             gsub(":.+|"QT, "", $2);
             # Filter suboptimal calls.
-            if ($12 != "+" || $5 < {params.thr}) {{next}};
+            if ($12 != "+") {{next}};
             print $1, $3, $4, $2, $5, strand, $3, $4, "0,0,0"
         }}' {input} > {output} 2> {log}
         """

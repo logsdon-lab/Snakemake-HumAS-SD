@@ -6,6 +6,10 @@ import sys
 
 
 RGX_CHRS = re.compile(r"C([\d\/XYM]+)H")
+DEF_THR_IDENT = 90.0
+# Add special case for S3CXH1L.4 which has reported length of 185 bp.
+# Lower identity needed to avoid filtering out.
+THR_IDENT_EDGE_CASES = {"S3CXH1L.4": 85.0}
 
 
 def stv_namer(live_stv_name, mons_numbers, strand):
@@ -100,6 +104,13 @@ def main():
         "-i", "--input_bed_path", help="BED9 file of HOR monomers.", required=True
     )
     parser.add_argument(
+        "-t",
+        "--threshold_identity",
+        help="Sequence identity threshold.",
+        type=float,
+        default=DEF_THR_IDENT,
+    )
+    parser.add_argument(
         "-o",
         "--output_bed_path",
         help="BED9 file of stv annotations.",
@@ -110,6 +121,7 @@ def main():
 
     input_bed_path = args.input_bed_path
     output_bed_path = args.output_bed_path
+    thr_ident = args.threshold_identity
 
     # NA19650_rc-chr22_h1tg000022l#1-28700957:2895006-6578064_renamed.bed
     # input_bed_path = 'D:/working/HOR_STV/test_case/input_horname_test.bed'
@@ -123,6 +135,11 @@ def main():
                 name, st, end, monomer_name, ident, ort, st_2, end_2, rgb = line.split(
                     "\t"
                 )
+                mon_thr_ident = THR_IDENT_EDGE_CASES.get(monomer_name, thr_ident)
+                # Skip if less that threshold.
+                if mon_thr_ident > float(ident):
+                    continue
+
                 chroms = set(
                     chrom
                     for chrom_str in RGX_CHRS.findall(monomer_name)
