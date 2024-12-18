@@ -30,8 +30,6 @@ logs_dir: "logs"
 # Input HMM profile with all possible monomers.
 # May remove.
 hmm_profile: "data/AS-HORs-hmmer.hmm"
-# Threads passed to stringdecomposer
-threads: 4
 ```
 
 ### Test
