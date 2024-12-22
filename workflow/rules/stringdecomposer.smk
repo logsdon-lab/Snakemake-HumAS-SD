@@ -42,7 +42,7 @@ rule run_stringdecomposer:
         join(BMK_DIR, "run_stringdecomposer_{fname}.txt")
     log:
         join(LOG_DIR, "run_stringdecomposer_{fname}.log"),
-    threads: 1
+    threads: config["threads"]
     conda:
         "../envs/env.yaml"
     shell:
