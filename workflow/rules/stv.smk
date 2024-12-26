@@ -10,13 +10,14 @@ rule generate_stv:
         "../envs/env.yaml"
     params:
         thr=IDENT_THR,
+        chrom=get_chrom,
     benchmark:
         join(BMK_DIR, "generate_stv_{fname}.txt")
     log:
         join(LOG_DIR, "generate_stv_{fname}.log"),
     shell:
         """
-        python {input.script} -i {input.hor_bed} -t {params.thr} -o {output.stv_row_bed} 2> {log}
+        python {input.script} -i {input.hor_bed} -c {params.chrom} -t {params.thr} -o {output.stv_row_bed} 2> {log}
         """
 
 
