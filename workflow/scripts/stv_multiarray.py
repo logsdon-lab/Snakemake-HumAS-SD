@@ -104,6 +104,13 @@ def main():
         "-i", "--input_bed_path", help="BED9 file of HOR monomers.", required=True
     )
     parser.add_argument(
+        "-c",
+        "--chrom",
+        help="Chromosome of HOR monomers. ex. chrX",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
         "-t",
         "--threshold_identity",
         help="Sequence identity threshold.",
@@ -122,6 +129,7 @@ def main():
     input_bed_path = args.input_bed_path
     output_bed_path = args.output_bed_path
     thr_ident = args.threshold_identity
+    chrom = args.chrom
 
     # NA19650_rc-chr22_h1tg000022l#1-28700957:2895006-6578064_renamed.bed
     # input_bed_path = 'D:/working/HOR_STV/test_case/input_horname_test.bed'
@@ -140,28 +148,23 @@ def main():
                 if mon_thr_ident > float(ident):
                     continue
 
-                chroms = set(
-                    chrom
-                    for chrom_str in RGX_CHRS.findall(monomer_name)
-                    for chrom in chrom_str.split("/")
-                )
-
-                if "1" in chroms or "19" in chroms or "5" in chroms:
+                if chrom == "chr1" or chrom == "chr19":
                     if "S1C1/5/19H1L.6/4" == monomer_name:
                         monomer_name = "S1C1/5/19H1L.6"
 
+                elif chrom == "chr5":
                     if "S1C1/5/19H1L.2/6" == monomer_name:
                         monomer_name = "S1C1/5/19H1L.6"
 
-                elif "8" in chroms:
+                elif chrom == "chr8":
                     if "S2C8H1L.6/7s" == monomer_name:
                         monomer_name = "S2C8H1L.6/7"
 
-                elif "13" in chroms or "21" in chroms:
+                elif chrom == "chr13":
                     if "S2C13/21H1-B.10" == monomer_name:
                         monomer_name = "S2C13/21H1L.10"
 
-                elif "18" in chroms:
+                elif chrom == "chr18":
                     if (
                         "S2C18H2-E.x/2" == monomer_name
                         or "S2C18H2-E.2/x" == monomer_name

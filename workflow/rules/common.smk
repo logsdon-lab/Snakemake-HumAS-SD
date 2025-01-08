@@ -3,6 +3,11 @@ import sys
 from os.path import join, dirname
 
 
+def get_chrom(wc) -> str:
+    if mtch_chr_name := re.search(RGX_CHR, wc.fname):
+        return mtch_chr_name.group()
+
+
 def extract_fa_fnames_and_chr(
     input_dir: str, *, filter_chr: str | None = None
 ) -> tuple[list[str], list[str]]:
