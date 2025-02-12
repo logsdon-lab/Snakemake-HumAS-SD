@@ -6,10 +6,8 @@ import sys
 
 
 RGX_CHRS = re.compile(r"C([\d\/XYM]+)H")
-DEF_THR_IDENT = 90.0
-# Add special case for S3CXH1L.4 which has reported length of 185 bp.
-# Lower identity needed to avoid filtering out.
-THR_IDENT_EDGE_CASES = {"S3CXH1L.4": 85.0}
+DEF_THR_IDENT = 85.0
+THR_IDENT_EDGE_CASES = {}
 
 
 def stv_namer(live_stv_name, mons_numbers, strand):
@@ -170,6 +168,16 @@ def main():
                         or "S2C18H2-E.2/x" == monomer_name
                     ):
                         monomer_name = "S2C18H2-E.2"
+
+                # B monomer breaks HOR array
+                elif chrom == "chr21":
+                    if "S2C13/21H1-B.10" == monomer_name:
+                        monomer_name = "S2C13/21H1L.10"
+
+                # Is chrX is + and is hybrid monomer
+                # Breaks array. Swap orientation.
+                elif chrom == "chrX" and ort == "+" and "/" in monomer_name:
+                    ort = "-"
 
                 if monomer_name.startswith("S"):
                     input_bed.append(

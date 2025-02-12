@@ -15,6 +15,11 @@ from test.scripts.helpers import run_integration_test
             "test/data/stv_multiarray/S3CXH1L.4/expected.bed",
             "chrX",
         ),
+        (
+            "test/data/stv_multiarray/chrX_hybrid_ort/input.bed",
+            "test/data/stv_multiarray/chrX_hybrid_ort/expected.bed",
+            "chrX",
+        ),
     ],
 )
 def test_stv_multiarray(infile: str, expected: str, chrom: str):
