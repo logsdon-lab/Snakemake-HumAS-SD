@@ -47,7 +47,9 @@ rule run_stringdecomposer:
         "../envs/env.yaml"
     shell:
         """
-        stringdecomposer -t {threads} {input.seq} {input.monomers} -o {params.output_dir} &> {log}
+        ( stringdecomposer -t {threads} {input.seq} {input.monomers} -o {params.output_dir} || true ) &> {log}
+        # Allow to continue on failures.
+        touch {output}
         """
 
 
