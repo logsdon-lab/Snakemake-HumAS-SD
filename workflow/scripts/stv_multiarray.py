@@ -138,9 +138,20 @@ def main():
     with open(input_bed_path) as bed:
         for line in bed:
             if line[:5] != "track":  # skip header
-                name, st, end, monomer_name, ident, ort, st_2, end_2, rgb = line.split(
-                    "\t"
-                )
+                try:
+                    (
+                        name,
+                        st,
+                        end,
+                        monomer_name,
+                        ident,
+                        ort,
+                        st_2,
+                        end_2,
+                        rgb,
+                    ) = line.split("\t")
+                except ValueError:
+                    continue
                 mon_thr_ident = THR_IDENT_EDGE_CASES.get(monomer_name, thr_ident)
                 # Skip if less that threshold.
                 if mon_thr_ident > float(ident):
