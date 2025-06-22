@@ -18,6 +18,8 @@ snakemake -np --sdm conda --configfile config/config.yaml -c 1
 Expects `.fa` files in `input_dir` with `chr?` in name.
 * ex. `chr3.fa`, `HG0002_ch3_new.fa`, or `HG00171_chr3.fa`
 
+If multiple `chr?`s are in the filename, each is added to the monomer library.
+* ex. `chr3-chr13.fa`
 
 ### Config
 ```yaml

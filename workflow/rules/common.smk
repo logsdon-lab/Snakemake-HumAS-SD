@@ -3,31 +3,19 @@ import sys
 from os.path import join, dirname
 
 
-def get_chrom(wc) -> str:
-    if mtch_chr_name := re.search(RGX_CHR, wc.fname):
-        return mtch_chr_name.group()
+def get_chrom(fname: str) -> str:
+    return "-".join(re.findall(RGX_CHR, fname))
 
 
-def extract_fa_fnames_and_chr(
-    input_dir: str, *, filter_chr: str | None = None
-) -> tuple[list[str], list[str]]:
+def extract_fa_fnames_and_chr(input_dir: str) -> tuple[list[str], list[str]]:
     fnames = glob_wildcards(join(input_dir, "{fname}.fa")).fname
     filtered_fnames, chrs = [], []
     for fname in fnames:
-        if mtch_chr_name := re.search(RGX_CHR, fname):
-            chr_name = mtch_chr_name.group().strip("_")
-
-            if not filter_chr:
-                filtered_fnames.append(fname)
-                chrs.append(chr_name)
-                continue
-
-            # Filter by chr.
-            if chr_name != filter_chr:
-                continue
-
-            filtered_fnames.append(fname)
-            chrs.append(chr_name)
+        chr_name = "-".join(re.findall(RGX_CHR, fname))
+        if not chr_name:
+            continue
+        filtered_fnames.append(fname)
+        chrs.append(chr_name)
 
     assert len(filtered_fnames) == len(
         chrs

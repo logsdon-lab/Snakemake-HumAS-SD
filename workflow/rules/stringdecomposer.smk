@@ -1,28 +1,31 @@
 
 
-checkpoint generate_monomers:
+rule generate_monomers:
     input:
         script=workflow.source_path("../scripts/parse_hmm.py"),
-        # TODO: Replace with fasta dir?
         hmm=HMM_PROFILE,
     output:
-        directory(join(OUTPUT_DIR, "monomers")),
+        join(OUTPUT_DIR, "monomers", "{chrom}.fa"),
     benchmark:
-        join(BMK_DIR, "generate_monomers.txt")
+        join(BMK_DIR, "generate_monomers_{chrom}.txt")
+    params:
+        # If multi chromosome, split and add to library. ex. chr1
+        chrs=lambda wc: " ".join(wc.chrom.split("-")),
     log:
-        join(LOG_DIR, "generate_monomers.log"),
+        join(LOG_DIR, "generate_monomers_{chrom}.log"),
     conda:
         "../envs/env.yaml"
     shell:
         """
-        python {input.script} -i {input.hmm} -o {output} 2> {log}
+        python {input.script} -i {input.hmm} -o {output} -c {params.chrs} 2> {log}
         """
 
 
 def get_monomer_by_chr(wc):
-    output_dir = checkpoints.generate_monomers.get(**wc).output
-    chr_name = re.search(RGX_CHR, str(wc.fname)).group()
-    return os.path.join(str(output_dir), f"{chr_name}.fa")
+    chr_name = get_chrom(wc.fname)
+    monomer_fa = expand(rules.generate_monomers.output, chrom=chr_name)
+    # TODO: Provide custom library.
+    return monomer_fa
 
 
 rule run_stringdecomposer:
@@ -77,7 +80,7 @@ rule convert_to_bed9:
 
 rule stringdecomposer_all:
     input:
-        rules.generate_monomers.output,
-        expand(rules.run_stringdecomposer.output, zip, fname=FNAMES, chr=CHRS),
-        expand(rules.convert_to_bed9.output, zip, fname=FNAMES, chr=CHRS),
+        expand(rules.generate_monomers.output, chrom=CHRS),
+        expand(rules.run_stringdecomposer.output, zip, fname=FNAMES),
+        expand(rules.convert_to_bed9.output, zip, fname=FNAMES),
     default_target: True

@@ -1,5 +1,4 @@
 import re
-import os
 import argparse
 import itertools
 from collections import Counter, defaultdict
@@ -12,15 +11,22 @@ CHRS = [f"{i}" for i in itertools.chain(range(1, 23), ("X", "Y", "M"))]
 # https://www.nature.com/articles/s41586-023-05976-y
 ACRO_LD_CHRS = {"13", "14", "21", "22"}
 
-ap = argparse.ArgumentParser(description="Convert HMM model to fasta.")
-ap.add_argument("-i", "--input_hmm", help="Input HMM model file.", required=True, type=argparse.FileType("r"))
-ap.add_argument("-o", "--outdir", help="Output directory.", type=str, required=True)
+ap = argparse.ArgumentParser(description="Convert HMM profile to fasta.")
+ap.add_argument(
+    "-i",
+    "--input_hmm",
+    help="Input HMM model file.",
+    required=True,
+    type=argparse.FileType("r"),
+)
+ap.add_argument("-c", "--chromosomes", nargs="*", help="Chromosomes", default=RGX_CHRS)
+ap.add_argument("-o", "--outfile", help="Output fasta.", type=str, required=True)
 
 args = ap.parse_args()
 
 fh: TextIO = args.input_hmm
-outdir = args.outdir
-os.makedirs(outdir, exist_ok=True)
+outfile = args.outfile
+chromosomes = set(args.chromosomes)
 
 # http://eddylab.org/software/hmmer/Userguide.pdf
 hmm = fh.read().split("//")
@@ -40,10 +46,10 @@ for hmm_rec in hmm:
     else:
         new_hor_name = hor_name
 
-    hor_seq = ''.join(nt for _, nt in re.findall(RGX_NT, hmm_rec)).upper()
+    hor_seq = "".join(nt for _, nt in re.findall(RGX_NT, hmm_rec)).upper()
     # Is ancestral monomer. Add to all chrs.
     if not hor_name.startswith("S"):
-        for chr_name in CHRS:
+        for chr_name in chromosomes:
             all_chrom_mons[chr_name].add((new_hor_name, hor_seq))
         continue
 
@@ -60,10 +66,10 @@ for hmm_rec in hmm:
 
     hors_done[hor_name] += 1
 
-for chr_name, hor_mons in all_chrom_mons.items():
-    with open(
-        os.path.join(outdir, f"chr{chr_name}.fa"), "wt"
-    ) as fh:
+with open(outfile, "wt") as fh:
+    for chr_name, hor_mons in all_chrom_mons.items():
+        if chr_name not in chromosomes:
+            continue
         for hor_mon, hor_mon_seq in hor_mons:
             fh.write(f">{hor_mon}\n")
             fh.write(f"{hor_mon_seq}\n")
