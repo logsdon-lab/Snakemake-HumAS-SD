@@ -143,11 +143,7 @@ def main():
                 if mon_thr_ident > float(ident):
                     continue
 
-                if "chr1" in name or "chr19" in name:
-                    if "S1C1/5/19H1L.6/4" == monomer_name:
-                        monomer_name = "S1C1/5/19H1L.6"
-
-                elif "chr5" in name:
+                if "chr5" in name:
                     if "S1C1/5/19H1L.2/6" == monomer_name:
                         monomer_name = "S1C1/5/19H1L.6"
 
@@ -170,6 +166,10 @@ def main():
                 elif "chr21" in name:
                     if "S2C13/21H1-B.10" == monomer_name:
                         monomer_name = "S2C13/21H1L.10"
+
+                elif "chr1" in name or "chr19" in name:
+                    if "S1C1/5/19H1L.6/4" == monomer_name:
+                        monomer_name = "S1C1/5/19H1L.6"
 
                 # Is chrX is + and is hybrid monomer
                 # Breaks array. Swap orientation.
