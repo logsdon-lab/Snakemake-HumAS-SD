@@ -1,8 +1,8 @@
 import re
+import gzip
 import argparse
 import itertools
 from collections import Counter, defaultdict
-from typing import TextIO
 
 RGX_NAME = re.compile(r"NAME\s\s(.*?)\n")
 RGX_NT = re.compile(r"(\d)\s([atgc])")
@@ -17,19 +17,22 @@ ap.add_argument(
     "--input_hmm",
     help="Input HMM model file.",
     required=True,
-    type=argparse.FileType("r"),
+    type=str,
 )
 ap.add_argument("-c", "--chromosomes", nargs="*", help="Chromosomes", default=RGX_CHRS)
 ap.add_argument("-o", "--outfile", help="Output fasta.", type=str, required=True)
 
 args = ap.parse_args()
 
-fh: TextIO = args.input_hmm
+with gzip.open(args.input_hmm) if args.input_hmm.endswith(".gz") else open(
+    args.input_hmm
+) as fh:
+    hmm = fh.read().split("//")
+
 outfile = args.outfile
 chromosomes = set(args.chromosomes)
 
 # http://eddylab.org/software/hmmer/Userguide.pdf
-hmm = fh.read().split("//")
 
 hors_done = Counter()
 all_chrom_mons = defaultdict(set)
