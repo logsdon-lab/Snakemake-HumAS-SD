@@ -24,10 +24,12 @@ ap.add_argument("-o", "--outfile", help="Output fasta.", type=str, required=True
 
 args = ap.parse_args()
 
-with gzip.open(args.input_hmm) if args.input_hmm.endswith(".gz") else open(
-    args.input_hmm
-) as fh:
-    hmm = fh.read().split("//")
+if args.input_hmm.endswith(".gz"):
+    with gzip.open(args.input_hmm) as fh:
+        hmm = fh.read().decode().split("//")
+else:
+    with open(args.input_hmm) as fh:
+        hmm = fh.read().split("//")
 
 outfile = args.outfile
 chromosomes = set(args.chromosomes)
