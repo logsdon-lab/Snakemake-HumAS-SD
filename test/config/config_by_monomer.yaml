@@ -1,0 +1,7 @@
+input_dir: "test/data"
+output_dir: "test/results"
+benchmarks_dir: "benchmarks"
+logs_dir: "logs"
+monomer_dir: "monomers"
+threads: 4
+run_stv: false

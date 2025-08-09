@@ -29,11 +29,18 @@ input_dir: "cens"
 output_dir: "results"
 benchmarks_dir: "benchmarks"
 logs_dir: "logs"
+
 # Input HMM profile with all possible monomers.
 # May remove.
 hmm_profile: "data/AS-HORs-hmmer.hmm"
+# XOR provide a monomer dir where each input fa in input_dir has a matching fa in this dir to use as library.
+monomer_dir: "monomers"
+
 # Threads passed to stringdecomposer
 threads: 4
+
+# Run stv script.
+run_stv: true
 ```
 
 ### Test

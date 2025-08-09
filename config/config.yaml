@@ -2,7 +2,12 @@ input_dir: "cens"
 output_dir: "results"
 benchmarks_dir: "benchmarks"
 logs_dir: "logs"
+# Extracts sequence from HMM profile.
 hmm_profile: "data/AS-HORs-hmmer.hmm"
+# Run by matching monomer fasta with input_dir fa
+# monomer_dir: "monomers"
 threads: 24
 mem: 8GB
 identity_thr: 85.0
+# Run stv.
+run_stv: true

@@ -9,8 +9,13 @@ include: "rules/stringdecomposer.smk"
 include: "rules/stv.smk"
 
 
+outputs = [rules.stringdecomposer_all.input]
+
+if config.get("run_stv", True):
+    outputs.append(rules.stv_all.input)
+
+
 rule all:
     input:
-        rules.stringdecomposer_all.input,
-        rules.stv_all.input,
+        outputs,
     default_target: True

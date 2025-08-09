@@ -21,16 +21,22 @@ rule generate_monomers:
         """
 
 
-def get_monomer_by_chr(wc):
-    chr_name = get_chrom(wc.fname)
-    monomer_fa = expand(rules.generate_monomers.output, chrom=chr_name)
-    # TODO: Provide custom library.
+def get_monomers(wc):
+    if config.get("hmm_profile"):
+        chr_name = get_chrom(wc.fname)
+        monomer_fa = expand(rules.generate_monomers.output, chrom=chr_name)
+    elif config.get("monomer_dir"):
+        # Provide custom library matching sequence name.
+        monomer_fa = os.path.join(config["monomer_dir"], f"{wc.fname}.fa")
+    else:
+        raise ValueError("No monomer source provided.")
+
     return monomer_fa
 
 
 rule run_stringdecomposer:
     input:
-        monomers=get_monomer_by_chr,
+        monomers=get_monomers,
         seq=os.path.join(INPUT_DIR, "{fname}.fa"),
     output:
         alt=join(OUTPUT_DIR, "{fname}", "final_decomposition_alt.tsv"),
