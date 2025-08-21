@@ -86,7 +86,6 @@ rule convert_to_bed9:
 
 rule stringdecomposer_all:
     input:
-        expand(rules.generate_monomers.output, chrom=CHRS),
         expand(rules.run_stringdecomposer.output, zip, fname=FNAMES),
         expand(rules.convert_to_bed9.output, zip, fname=FNAMES),
     default_target: True
