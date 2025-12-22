@@ -1,25 +1,24 @@
 # Snakemake-HumAS-SD
 Workflow to use [`stringdecomposer`](https://github.com/ablab/stringdecomposer) to annotate alpha-satellite HOR monomers.
 
-HMM profile:
-* https://github.com/fedorrik/HumAS-HMMER_for_AnVIL/blob/main/AS-HORs-hmmer3.4-071024.hmm
-
-Based on annotations from:
-* Shepelev VA, Uralsky LI, Alexandrov AA, Yurov YB, Rogaev EI, Alexandrov IA. Annotation of suprachromosomal families reveals uncommon types of alpha satellite organization in pericentromeric regions of hg38 human genome assembly. Genom Data. 2015;5:139-146. doi:10.1016/j.gdata.2015.05.035
-
-### Usage
+## Usage
 ```bash
 conda env create -f env.yaml --name humas_sd
 conda activate humas_sd
 snakemake -np --sdm conda --configfile config/config.yaml -c 1
 ```
 
-### Input
+## Input
 Expects `.fa` files in `input_dir` with `chr?` in name.
 * ex. `chr3.fa`, `HG0002_ch3_new.fa`, or `HG00171_chr3.fa`
 
+## Output
+1. `results/{contig}/stv_row.bed`
+    * HOR variants
+2. `results/{contig}/final_decomposition.bed`
+    * `StringDecomposer` output formatted as BED9 file
 
-### Config
+## Configuration
 ```yaml
 # Input directory with fa files.
 input_dir: "cens"
@@ -34,7 +33,16 @@ hmm_profile: "data/AS-HORs-hmmer.hmm"
 threads: 4
 ```
 
-### Test
+## Test
+
+### Workflow
+On HG01596 chr3 H1.
+```bash
+# ~5-10 minutes.
+snakemake -np --sdm conda --configfile test/config/config.yaml -c 4
+```
+
+### Compare HumAS-HMMER
 Two centromere HOR annotation bed files.
 1. Output from HumAS-HMMER_for_AnVIL using https://github.com/logsdon-lab/CenMAP/blob/main/data/models/AS-HORs-hmmer3.0-170921.hmm.
     * See also https://github.com/logsdon-lab/Snakemake-HumAS-HMMER
@@ -58,3 +66,13 @@ Other:
         Total: 4567
         Perc: 84.9573023866871
 ```
+
+## Sources
+1. HMM profile:
+    * https://github.com/fedorrik/HumAS-HMMER_for_AnVIL/blob/main/AS-HORs-hmmer3.4-071024.hmm
+
+2. Based on annotations from:
+    * Shepelev VA, Uralsky LI, Alexandrov AA, Yurov YB, Rogaev EI, Alexandrov IA. Annotation of suprachromosomal families reveals uncommon types of alpha satellite organization in pericentromeric regions of hg38 human genome assembly. Genom Data. 2015;5:139-146. doi:10.1016/j.gdata.2015.05.035
+
+## Cite
+**Gao S, Oshima KK**, Chuang SC, Loftus M, Montanari A, Gordon DS, Human Genome Structural Variation Consortium, Human Pangenome Reference Consortium, Hsieh P, Konkel MK, Ventura M, Logsdon GA. A global view of human centromere variation and evolution. bioRxiv. 2025. p. 2025.12.09.693231. [doi:10.64898/2025.12.09.693231](https://doi.org/10.64898/2025.12.09.693231)
