@@ -5,7 +5,12 @@ import itertools
 from collections import Counter, defaultdict
 
 RGX_NAME = re.compile(r"NAME\s\s(.*?)\n")
-RGX_NT = re.compile(r"(\d)\s([atgc])")
+# Correctly captures J1/J2 monomers in HMM profile
+# https://regex101.com/r/WiL4x9/1
+RGX_NT = re.compile(
+    r"^[ \t]*(\d+)(?:[ \t]+\S+){5}[ \t]+([ACGTacgt])(?=[ \t]|$)",
+    re.MULTILINE,
+)
 RGX_CHRS = re.compile(r"C([\d\/XYM]+)H")
 CHRS = [f"{i}" for i in itertools.chain(range(1, 23), ("X", "Y", "M"))]
 # https://www.nature.com/articles/s41586-023-05976-y
